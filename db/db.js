@@ -74,22 +74,26 @@ CREATE TABLE IF NOT EXISTS parking_history (
     FOREIGN KEY (parking_id) REFERENCES parking_zones(parking_id)
   )
 `;
-  db.query(createUser, (err, result) => {
-    if (err) console.log(err);
-  });
-  db.query(createAdmins, (err, result) => {
-    if (err) console.log(err);
-  });
-  db.query(createCars, (err, result) => {
-    if (err) console.log(err);
-  });
-  db.query(createParkingZones, (err, result) => {
-    if (err) console.log(err);
-  });
-  db.query(createParkingHistory, (err, result) => {
-    if (err) console.log(err);
-  });
-  console.log('created all tables')
+
+  // util
+  function execQuery(table, query) {
+    db.query(query, (err, result) => {
+      if (err) {
+        console.log(err);
+      }
+    });
+  }
+  const tables = [
+    { name: "users", query: createUser },
+    { name: "admins", query: createUser },
+    { name: "cars", query: createUser },
+    { name: "parking_zones", query: createUser },
+    { name: "parking_history", query: createUser },
+  ];
+  for (const e of tables) {
+    execQuery(e.name, e.query);
+  }
+  console.log("created all tables");
 });
 
 module.exports = db;
