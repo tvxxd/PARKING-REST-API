@@ -1,6 +1,7 @@
 const mysql = require("mysql2");
 const dotenv = require("dotenv");
 dotenv.config();
+const { execQuery } = require("../utils");
 
 // db connection
 const db = mysql.createConnection({
@@ -25,15 +26,6 @@ CREATE TABLE IF NOT EXISTS users (
     password VARCHAR(255) NOT NULL,
     balance integer DEFAULT 100,
     is_admin BOOLEAN DEFAULT false
-  )
-`;
-  const createAdmins = `
-CREATE TABLE IF NOT EXISTS admins (
-    admin_id integer PRIMARY KEY AUTO_INCREMENT,
-    admin_username VARCHAR(25) NOT NULL UNIQUE,
-    admin_email VARCHAR(255) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
-    is_admin BOOLEAN DEFAULT true
   )
 `;
 
@@ -76,24 +68,22 @@ CREATE TABLE IF NOT EXISTS parking_history (
 `;
 
   // util
-  function execQuery(table, query) {
-    db.query(query, (err, result) => {
-      if (err) {
-        console.log(err);
-      }
-    });
-  }
+
   const tables = [
     { name: "users", query: createUser },
-    { name: "admins", query: createUser },
     { name: "cars", query: createUser },
     { name: "parking_zones", query: createUser },
     { name: "parking_history", query: createUser },
   ];
   for (const e of tables) {
-    execQuery(e.name, e.query);
+    execQuery(db, e.query)
+      .then(() => {
+        console.log(`success ${e.name}`);
+      })
+      .catch((err) => {
+        throw err;
+      });
   }
-  console.log("created all tables");
 });
 
 module.exports = db;
