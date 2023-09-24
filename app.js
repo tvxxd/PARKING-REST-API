@@ -3,11 +3,22 @@ const dotenv = require("dotenv");
 dotenv.config();
 require("express-async-errors");
 require("http-status-codes");
+const connectDB = require('./db/db');
 const app = express();
+
+// routers 
+const authRouter = require('./routes/auth')
+const parkingRouter = require('./routes/parkings')
 
 // error handler
 const notFoundMw = require("./middleware/notFound");
 const errorHandlerMw = require("./middleware/errorHandler");
+
+
+// routes
+app.use('/api/auth', authRouter)
+app.use('/api/parkings', parkingRouter)
+
 
 app.use(notFoundMw);
 app.use(errorHandlerMw);

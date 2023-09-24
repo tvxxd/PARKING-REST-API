@@ -15,7 +15,7 @@ db.connect((err) => {
   if (err) console.log(err);
   console.log("connection successful");
 
-  /* Tables for users,admins,cars,parking zones/history
+  /* Tables for users,cars,parking zones/history
   and execute creation */
 
   const createUser = `
@@ -66,8 +66,6 @@ CREATE TABLE IF NOT EXISTS parking_history (
     FOREIGN KEY (parking_id) REFERENCES parking_zones(parking_id)
   )
 `;
-
-  // util
 
   const tables = [
     { name: "users", query: createUser },
