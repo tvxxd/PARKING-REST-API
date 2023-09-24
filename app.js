@@ -14,8 +14,10 @@ const parkingRouter = require('./routes/parkings')
 const notFoundMw = require("./middleware/notFound");
 const errorHandlerMw = require("./middleware/errorHandler");
 
+app.use(express.json());
 
 // routes
+// /api/auth/register 
 app.use('/api/auth', authRouter)
 app.use('/api/parkings', parkingRouter)
 
