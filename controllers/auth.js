@@ -27,7 +27,16 @@ const register = async (req, res) => {
       }
 
       if (results.length > 0) {
-        res.status(StatusCodes.BAD_REQUEST).json({message: 'user exists brotha'})
+        return res
+          .status(StatusCodes.BAD_REQUEST)
+          .json({ message: "user exists brotha" });
+      }
+      const emailRegEx = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+
+      if (!emailRegEx.test(email)) {
+        return res
+          .status(StatusCodes.BAD_REQUEST)
+          .json({ message: "input valid email" });
       }
       // insert into db
       const insertUser = `
@@ -54,9 +63,7 @@ const register = async (req, res) => {
     }
   }
 };
-const login = async (req, res) => {
-  
-};
+const login = async (req, res) => {};
 
 module.exports = {
   register,
