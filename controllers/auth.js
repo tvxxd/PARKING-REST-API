@@ -1,6 +1,8 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const db = require("../db/db");
+const dotenv = require("dotenv");
+dotenv.config();
 const {
   unAuthorizedErr,
   badRequestErr,
@@ -19,7 +21,7 @@ response
 
 const register = async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    const { username, email, password, isAdmin } = req.body;
 
     // hash pw (generate bunch of bullshit)
     const hashedPW = await bcrypt.hash(password, 10);
@@ -49,15 +51,19 @@ const register = async (req, res) => {
           .json({ message: "input valid email" });
       }
       // insert into db
-      const insertUser = `INSERT INTO users (username, email, password) VALUES(?, ?, ?)`;
-      db.query(insertUser, [username, email, hashedPW], (err, result) => {
-        if (err) {
-          throw new badRequestErr("registration failed");
+      const insertUser = `INSERT INTO users (username, email, password, is_admin) VALUES(?, ?, ?, ?)`;
+      db.query(
+        insertUser,
+        [username, email, hashedPW, isAdmin],
+        (err, result) => {
+          if (err) {
+            throw new badRequestErr("registration failed");
+          }
+          res
+            .status(StatusCodes.CREATED)
+            .json({ message: "successful registration bro" });
         }
-        res
-          .status(StatusCodes.CREATED)
-          .json({ message: "successful registration bro" });
-      });
+      );
     });
   } catch (error) {
     console.log(error);
@@ -80,15 +86,23 @@ const login = async (req, res) => {
       }
       if (result.length === 0) {
         return res
-          .status(StatusCodes.BAD_REQUEST)
+          .status(StatusCodes.NOT_FOUND)
           .json({ message: "login failed, user not found" });
       }
       // receive password to compare hashed passw
       const user = result[0];
       const comparison = await bcrypt.compare(password, user.password);
       if (comparison) {
-        // json token required
-        res.status(StatusCodes.OK).json({ message: 'loggedin' });
+        const jsonwebtoken = jwt.sign(
+          {
+            userId: user.user_id,
+            username: user.username,
+            is_admin: user.is_admin,
+          },
+          process.env.JWT_KEY,
+          { expiresIn: "3h" }
+        );
+        res.status(StatusCodes.OK).json({ jsonwebtoken });
       } else {
         throw new unAuthorizedErr("invalid username or password");
       }

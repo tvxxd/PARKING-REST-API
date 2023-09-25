@@ -8,6 +8,10 @@ const {
   deleteParkingZone,
 } = require("../controllers/parkings");
 
+const adminMiddleware = require('../middleware/adminAuth');
+
+router.use(adminMiddleware);
+
 router.route("/").post(createParkingZone).get(getAllParkingZones);
 router
   .route("/:id")
