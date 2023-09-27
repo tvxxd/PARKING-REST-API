@@ -30,12 +30,12 @@ const getAllParkingZones = async (req, res) => {
       }
 
       const query = "SELECT * FROM parking_zones";
-      db.query(query, (err, results) => {
+      db.query(query, (err, result) => {
         if (err) {
           throw err;
         }
 
-        res.status(StatusCodes.OK).json(results);
+        res.status(StatusCodes.OK).json(result);
       });
     });
   } catch (error) {
@@ -82,7 +82,7 @@ const getParkingZone = async (req, res) => {
         if (result.length === 0) {
           return res
             .status(StatusCodes.NOT_FOUND)
-            .json({ message: "zone not found" });
+            .json({ message: `zone not found ${id} ` });
         }
 
         res.status(StatusCodes.OK).json(result[0]);
@@ -221,7 +221,7 @@ const deleteParkingZone = async (req, res) => {
   try {
     const userId = req.user.user_id;
     const { id } = req.params;
-    checkAdmin = `SELECT is_admin FROM users where user_id = ? `;
+    const checkAdmin = `SELECT is_admin FROM users where user_id = ? `;
     db.query(checkAdmin, [userId], async (err, result) => {
       if (err) {
         throw err;
