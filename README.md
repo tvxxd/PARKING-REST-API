@@ -16,8 +16,6 @@ REST API for the Parking App.
 - `PATCH /api/parkings/:id`: update parking zone.
 - `DELETE /api/parkings/:id`: delete parking zone.
 
-<<<<<<< HEAD
-=======
 ### User Cars 
 
 - `POST /api/cars`: add a new car.
@@ -28,7 +26,6 @@ REST API for the Parking App.
 - `DELETE /api/cars/:id`: delete car.
 
 
->>>>>>> 4385f68 (CRUD for user's car)
 ### Authorization
 
 - include an admin JWT token in the Authorization header for perms
