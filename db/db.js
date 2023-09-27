@@ -45,11 +45,7 @@ CREATE TABLE IF NOT EXISTS parking_zones (
     parking_id integer PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(25) NOT NULL UNIQUE,
     address varchar(50) NOT NULL,
-    hourly_cost integer NOT NULL,
-    user_id integer NOT NULL,
-    car_id integer NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(user_id),
-    FOREIGN KEY (car_id) REFERENCES cars(car_id)
+    hourly_cost integer NOT NULL
   )
 `;
 
@@ -69,9 +65,9 @@ CREATE TABLE IF NOT EXISTS parking_history (
 
   const tables = [
     { name: "users", query: createUser },
-    { name: "cars", query: createUser },
-    { name: "parking_zones", query: createUser },
-    { name: "parking_history", query: createUser },
+    { name: "cars", query: createCars },
+    { name: "parking_zones", query: createParkingZones },
+    { name: "parking_history", query: createParkingHistory },
   ];
   for (const e of tables) {
     execQuery(db, e.query)

@@ -78,8 +78,8 @@ const register = async (req, res) => {
 };
 const login = async (req, res) => {
   try {
-    const { username, password } = req.body;
-    const selectUser = `SELECT username,password FROM users WHERE username = ?`;
+    const {username, password } = req.body;
+    const selectUser = `SELECT * FROM users WHERE username = ?`;
     db.query(selectUser, [username, password], async (err, result) => {
       if (err) {
         throw new badRequestErr("login failed");
@@ -95,7 +95,7 @@ const login = async (req, res) => {
       if (comparison) {
         const jsonwebtoken = jwt.sign(
           {
-            userId: user.user_id,
+            user_id: user.user_id,
             username: user.username,
             is_admin: user.is_admin,
           },

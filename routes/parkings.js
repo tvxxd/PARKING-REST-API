@@ -9,6 +9,8 @@ const {
 } = require("../controllers/parkings");
 
 const adminMiddleware = require('../middleware/adminAuth');
+const errorHandlerMw = require('../middleware/errorHandler');
+router.use(errorHandlerMw);
 
 router.use(adminMiddleware);
 
