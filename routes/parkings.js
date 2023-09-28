@@ -6,6 +6,7 @@ const {
   createParkingZone,
   updateParkingZone,
   deleteParkingZone,
+  getAllParkingHistory
 } = require("../controllers/parkings");
 
 const adminMiddleware = require("../middleware/adminAuth");
@@ -14,11 +15,11 @@ router.use(errorHandlerMw);
 
 router.use(adminMiddleware);
 
-router.route("/").post(createParkingZone).get(getAllParkingZones);
+router.route("/parking-zones").post(createParkingZone).get(getAllParkingZones);
 router
-  .route("/:id")
+  .route("/parking-zones/:id")
   .get(getParkingZone)
   .delete(deleteParkingZone)
   .patch(updateParkingZone);
-
+router.route("/parking-car-history").get(getAllParkingHistory);
 module.exports = router;

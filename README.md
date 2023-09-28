@@ -10,11 +10,12 @@ REST API for the Parking App.
 
 ### Parking Zone (admins only)
 
-- `POST /api/parkings`: create a new parking zone.
-- `GET /api/parkings`: list of all parking zones.
-- `GET /api/parkings/:id`: get a specific parking zone.
-- `PATCH /api/parkings/:id`: update parking zone.
-- `DELETE /api/parkings/:id`: delete parking zone.
+- `POST /api/parkings/parking-zones`: create a new parking zone.
+- `GET /api/parkings/parking-zones`: list of all parking zones.
+- `GET /api/parkings/parking-zones/:id`: get a specific parking zone.
+- `GET /api/parkings/parking-car-history`: get all parking history.
+- `PATCH /api/parkings/parking-zones/:id`: update parking zone.
+- `DELETE /api/parkings/parking-zones/:id`: delete parking zone.
 
 ### User Cars 
 
@@ -55,4 +56,4 @@ REST API for the Parking App.
     ```bash
     npm run dev
 
-3. Use Postman
+3. Use Postman, or you can use my requests https://www.postman.com/speeding-spaceship-360289/workspace/parking-rest-api/collection/29810198-de75ad71-ca94-42f6-93e1-30735f780fd3?action=share&creator=29810198

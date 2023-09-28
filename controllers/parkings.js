@@ -23,7 +23,7 @@ const getAllParkingZones = async (req, res) => {
 
       const user = result[0];
 
-      if (!user.is_admin) {
+      if (!req.user.is_admin) {
         return res
           .status(StatusCodes.BAD_REQUEST)
           .json({ message: "only admins" });
@@ -67,7 +67,7 @@ const getParkingZone = async (req, res) => {
 
       const user = result[0];
 
-      if (!user.is_admin) {
+      if (!req.user.is_admin) {
         return res
           .status(StatusCodes.BAD_REQUEST)
           .json({ message: "only admins" });
@@ -117,7 +117,7 @@ const createParkingZone = async (req, res) => {
       }
       const user = result[0];
 
-      if (!user.is_admin) {
+      if (!req.user.is_admin) {
         return res
           .status(StatusCodes.BAD_REQUEST)
           .json({ message: "only admins" });
@@ -185,7 +185,7 @@ const updateParkingZone = async (req, res) => {
         throw err;
       }
       const user = result[0];
-      if (!user.is_admin) {
+      if (!req.user.is_admin) {
         return res
           .status(StatusCodes.UNAUTHORIZED)
           .json({ message: "only admins" });
@@ -227,7 +227,7 @@ const deleteParkingZone = async (req, res) => {
         throw err;
       }
       const user = result[0];
-      if (!user.is_admin) {
+      if (!req.user.is_admin) {
         return res
           .status(StatusCodes.UNAUTHORIZED)
           .json({ message: "only admins" });
@@ -271,10 +271,36 @@ const deleteParkingZone = async (req, res) => {
   }
 };
 
+const getAllParkingHistory = async (req, res) => {
+  try {
+    const userId = req.user.is_admin;
+    if (!userId) {
+      return res
+        .status(StatusCodes.UNAUTHORIZED)
+        .json({ message: "admins only." });
+    }
+
+    const query = `SELECT * FROM parking_car;`;
+
+    db.query(query, (err, result) => {
+      if (err) {
+        throw err;
+      }
+      res.status(StatusCodes.OK).json(result);
+    });
+  } catch (error) {
+    console.log(error);
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: "fetch failed" });
+  }
+};
+
 module.exports = {
   getParkingZone,
   getAllParkingZones,
   createParkingZone,
   updateParkingZone,
   deleteParkingZone,
+  getAllParkingHistory,
 };
