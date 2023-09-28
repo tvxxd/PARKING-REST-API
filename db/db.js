@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS parking_car (
   parking_id int NOT NULL,
   car_id int NOT NULL,
   register_time DATETIME NOT NULL,
-  duration int NOT NULL,
+  duration int NOT NULL DEFAULT 0,
   FOREIGN KEY (user_id) REFERENCES users(user_id),
   FOREIGN KEY (parking_id) REFERENCES parking_zones(parking_id),
   FOREIGN KEY (car_id) REFERENCES cars(car_id)
@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS parking_history (
     user_id integer NOT NULL,
     car_id integer NOT NULL,
     parking_id integer NOT NULL,
-    register_time DATETIME NOT NULL,
+    register_timee DATETIME NOT NULL,
     duration integer NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(user_id),
     FOREIGN KEY (car_id) REFERENCES cars(car_id),

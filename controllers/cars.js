@@ -168,47 +168,76 @@ const deleteCar = async (req, res) => {
 
 const addCarToParkingZone = async (req, res) => {
   try {
-    const { parking_id, car_id } = req.params;
+    const { user_id, parking_id, car_id } = req.params;
 
-    const checkParkingZone = "SELECT * FROM parking_zones WHERE parking_id = ?";
-    db.query(checkParkingZone, [parking_id], (err, result) => {
+    // this checks multiple entries and if zone is occupied
+    const checkaddedZones = `
+      SELECT *
+      FROM parking_car
+      WHERE user_id = ? AND parking_id = ? AND car_id = ?
+    `;
+    db.query(checkaddedZones, [user_id, parking_id, car_id], (err, result) => {
       if (err) {
         throw err;
       }
 
-      if (result.length === 0) {
-        return res
-          .status(StatusCodes.NOT_FOUND)
-          .json({ message: "zone not found" });
-      }
-
-      const checkCar = "SELECT * FROM cars WHERE car_id = ?";
-      db.query(checkCar, [car_id], (err, result) => {
+      if (parking_id)
+        if (result.length > 0) {
+          return res.status(StatusCodes.BAD_REQUEST).json({
+            message: "this parking zone is reserved.",
+          });
+        }
+      const checkParkingZone =
+        "SELECT * FROM parking_zones WHERE parking_id = ?";
+      db.query(checkParkingZone, [parking_id], (err, result) => {
         if (err) {
           throw err;
         }
 
+        if (result.length > 0) {
+          return res.status(StatusCodes.BAD_REQUEST).json({
+            message: "zone is occupied.",
+          });
+        }
         if (result.length === 0) {
           return res
             .status(StatusCodes.NOT_FOUND)
-            .json({ message: "car not found" });
+            .json({ message: "zone not found" });
         }
 
-        const addCarToParking =
-          "INSERT INTO parking_car (user_id, parking_id, car_id) VALUES (?, ?, ?)";
-        db.query(
-          addCarToParking,
-          [req.user.user_id, parking_id, car_id],
-          (err) => {
-            if (err) {
-              throw err;
-            }
-
-            res
-              .status(StatusCodes.CREATED)
-              .json({ message: "car added to zone " });
+        const checkCar = "SELECT * FROM cars WHERE car_id = ?";
+        db.query(checkCar, [car_id], (err, result) => {
+          if (err) {
+            throw err;
           }
-        );
+
+          if (result.length === 0) {
+            return res
+              .status(StatusCodes.NOT_FOUND)
+              .json({ message: "car not found" });
+          }
+
+          const register_time = new Date()
+            .toISOString()
+            .slice(0, 19)
+            .replace("T", " ");
+          const duration = 0;
+
+          const addCarToParking =
+            "INSERT INTO parking_car (user_id, parking_id, car_id, register_time, duration) VALUES (?, ?, ?, ?, ?)";
+          db.query(
+            addCarToParking,
+            [req.user.user_id, parking_id, car_id, register_time, duration],
+            (err) => {
+              if (err) {
+                console.log(err);
+              }
+              res
+                .status(StatusCodes.CREATED)
+                .json({ message: "car added to zone " });
+            }
+          );
+        });
       });
     });
   } catch (error) {
